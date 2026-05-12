@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shield EMI Calculator</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-band">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Insurance-backed loan planning</p>
+          <h1>Shield EMI Calculator</h1>
+          <p class="hero-copy">
+            Estimate monthly EMI, insurance premium impact, total interest, and a practical repayment view in one place.
+          </p>
+        </div>
+      </section>
+
+      <section class="calculator-band">
+        <div class="calculator-layout">
+          <section class="input-panel" aria-labelledby="loanInputsTitle">
+            <div class="panel-heading">
+              <p class="eyebrow">Loan setup</p>
+              <h2 id="loanInputsTitle">Build your estimate</h2>
+            </div>
+
+            <form id="emiForm" novalidate>
+              <label class="field">
+                <span>Loan amount</span>
+                <div class="input-row">
+                  <span class="prefix">INR</span>
+                  <input id="principal" type="number" min="50000" max="10000000" step="10000" value="1200000" />
+                </div>
+                <input id="principalRange" type="range" min="50000" max="10000000" step="10000" value="1200000" />
+              </label>
+
+              <label class="field">
+                <span>Annual interest rate</span>
+                <div class="input-row">
+                  <input id="rate" type="number" min="1" max="30" step="0.05" value="10.5" />
+                  <span class="suffix">%</span>
+                </div>
+                <input id="rateRange" type="range" min="1" max="30" step="0.05" value="10.5" />
+              </label>
+
+              <label class="field">
+                <span>Tenure</span>
+                <div class="input-row split">
+                  <input id="years" type="number" min="1" max="30" step="1" value="7" />
+                  <span class="suffix">years</span>
+                </div>
+                <input id="yearsRange" type="range" min="1" max="30" step="1" value="7" />
+              </label>
+
+              <div class="insurance-block">
+                <div class="subheading">
+                  <h3>Insurance protection</h3>
+                  <label class="switch">
+                    <input id="insuranceEnabled" type="checkbox" checked />
+                    <span aria-hidden="true"></span>
+                  </label>
+                </div>
+
+                <label class="field compact">
+                  <span>One-time premium rate</span>
+                  <div class="input-row">
+                    <input id="insuranceRate" type="number" min="0" max="10" step="0.1" value="1.8" />
+                    <span class="suffix">%</span>
+                  </div>
+                  <input id="insuranceRateRange" type="range" min="0" max="10" step="0.1" value="1.8" />
+                </label>
+
+                <label class="check-row">
+                  <input id="financePremium" type="checkbox" checked />
+                  <span>Add insurance premium into the EMI principal</span>
+                </label>
+              </div>
+
+              <label class="field compact">
+                <span>Processing fee</span>
+                <div class="input-row">
+                  <input id="processingFee" type="number" min="0" max="5" step="0.1" value="0.8" />
+                  <span class="suffix">%</span>
+                </div>
+              </label>
+
+              <div class="form-actions">
+                <button class="primary-button" type="submit">Recalculate</button>
+                <button class="ghost-button" type="button" id="resetButton">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="results-panel" aria-live="polite">
+            <div class="panel-heading">
+              <p class="eyebrow">Results</p>
+              <h2>Repayment snapshot</h2>
+            </div>
+
+            <div class="headline-card">
+              <span>Estimated monthly EMI</span>
+              <strong id="monthlyEmi">INR 0</strong>
+              <small id="emiCaption">Calculated with financed protection premium.</small>
+            </div>
+
+            <div class="metrics-grid">
+              <article>
+                <span>Principal used</span>
+                <strong id="effectivePrincipal">INR 0</strong>
+              </article>
+              <article>
+                <span>Total interest</span>
+                <strong id="totalInterest">INR 0</strong>
+              </article>
+              <article>
+                <span>Insurance premium</span>
+                <strong id="insurancePremium">INR 0</strong>
+              </article>
+              <article>
+                <span>Processing fee</span>
+                <strong id="processingAmount">INR 0</strong>
+              </article>
+              <article>
+                <span>Total paid over tenure</span>
+                <strong id="totalPaid">INR 0</strong>
+              </article>
+              <article>
+                <span>Upfront cost</span>
+                <strong id="upfrontCost">INR 0</strong>
+              </article>
+            </div>
+
+            <div class="breakdown-panel">
+              <div>
+                <span>First EMI interest</span>
+                <strong id="firstInterest">INR 0</strong>
+              </div>
+              <div>
+                <span>First EMI principal</span>
+                <strong id="firstPrincipal">INR 0</strong>
+              </div>
+              <div>
+                <span>Repayment burden</span>
+                <strong id="burdenRatio">0%</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="schedule-band">
+        <div class="schedule-heading">
+          <div>
+            <p class="eyebrow">Schedule</p>
+            <h2>First 12 monthly installments</h2>
+          </div>
+          <p id="scheduleNote">Rounded estimates are shown for planning.</p>
+        </div>
+
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Opening balance</th>
+                <th>Principal</th>
+                <th>Interest</th>
+                <th>Closing balance</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
